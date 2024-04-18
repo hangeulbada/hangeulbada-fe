@@ -9,6 +9,7 @@ const ClassListHeader = styled.div`
     justify-content: space-between;
     margin: 24px;
 `;
+
 const ClassListTitle = styled.div`
     font-size: 24px;
     font-weight: 500;
