@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import SetBox from './SetBox';
+import SetBox from './setBox';
 import { useState, useEffect } from 'react';
 import { getSetListByWBId } from '../../utils/api/set';
 import { getSetByClass } from '../../utils/api/student';
