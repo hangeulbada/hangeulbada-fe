@@ -32,6 +32,7 @@ const SelectRole = ({ active, setActive }) => {
     const onClickHanlder = () => {
         setActive(true);
     };
+
     return (
         <div>
             <StyledRoleLayout>

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { RemoveIcon } from '../../assets/icons';
-import { removeStuClass } from '../../utils/api/student';
+import { RemoveIcon } from '../../../assets/icons';
+import { removeStuClass } from '../../../utils/api/student';
 import { useNavigate } from 'react-router-dom';
 
 const ClassCardLayout = styled.div`
@@ -43,7 +43,7 @@ const RemoveButton = styled.button`
     }
 `;
 
-const StuClassBox = ({ id, title, desc, isRemove, classList, setClassList }) => {
+const IncorrectClassBox = ({ id, title, desc, isRemove, classList, setClassList, workbookIds }) => {
     const navigate = useNavigate();
     const removeOnClick = () => {
         const requestRemove = async (groupId) => {
@@ -52,13 +52,13 @@ const StuClassBox = ({ id, title, desc, isRemove, classList, setClassList }) => 
                     return value.id !== groupId;
                 });
                 setClassList(filtered);
-                console.log(classList);
+                // console.log(classList);
             });
         };
         requestRemove(id);
     };
     const onClickClassBox = () => {
-        navigate('/StuSetListPage', { state: { id, title } });
+        navigate('/IncorrectSetListPage', { state: { id, title, workbookIds } });
     };
     return (
         <div>
@@ -77,4 +77,4 @@ const StuClassBox = ({ id, title, desc, isRemove, classList, setClassList }) => 
     );
 };
 
-export default StuClassBox;
+export default IncorrectClassBox;
