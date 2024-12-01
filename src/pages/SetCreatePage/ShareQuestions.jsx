@@ -173,7 +173,7 @@ const ShareQuestions = () => {
                     <Box>
                         <Button onClick={onClickShareQuestion}>문제 공유</Button>
 
-                        <Button onClick={onClickMyQuestion}>나의 문제 생성하기</Button>
+                        <Button onClick={onClickMyQuestion}>나의 문제 생성</Button>
                     </Box>
                 )}
             </HeaderBox>

@@ -68,7 +68,7 @@ const TextBox = styled.div`
 const RoleButton = ({ role, clicked, onClick }) => {
     return (
         <RoleButtonLayout clicked={clicked} onClick={onClick}>
-            <div>{role === 'teacher' ? '선생님' : '학생'}</div>
+            <div>{role === 'teacher' ? '교사' : '학생'}</div>
             <div className="or">혹은</div>
             <div>{role === 'teacher' ? '학부모' : '자녀'}</div>
         </RoleButtonLayout>
