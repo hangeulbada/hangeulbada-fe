@@ -159,6 +159,22 @@ const CreateAiQuestions = ({ count, diff, workbookId }) => {
         }
     };
 
+    const onChangeDifficulty = (value) => {
+        if (value === '') {
+            setDifficulty(value);
+            return;
+        }
+        const num = parseInt(value, 10);
+
+        // 값이 숫자가 아니거나 1~5 범위를 벗어나면 처리하지 않음
+        if (isNaN(num) || num < 1 || num > 5) {
+            return;
+        }
+
+        // 유효한 값일 경우 상태 업데이트
+        setDifficulty(num);
+    };
+
     const createAIQuestions = async (difficulty, selectedTag, count) => {
         try {
             setIsLoading(true);
@@ -243,7 +259,7 @@ const CreateAiQuestions = ({ count, diff, workbookId }) => {
                 ))}
             </TagButtonContainer>
             <Title>난이도 입력(1~5)</Title>
-            <AgeField value={difficulty} onChange={(e) => setDifficulty(e.target.value)}></AgeField>
+            <AgeField value={difficulty} onChange={(e) => onChangeDifficulty(e.target.value)}></AgeField>
             <ButtonDiv>
                 <ConfirmButton onClick={() => onClickConfirm()}>완료</ConfirmButton>
             </ButtonDiv>

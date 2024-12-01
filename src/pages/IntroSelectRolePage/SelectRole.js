@@ -37,7 +37,7 @@ const SelectRole = ({ active, setActive }) => {
         <div>
             <StyledRoleLayout>
                 <StyledRoleBox onClick={onClickHanlder}>
-                    선생님 <br /> 또는 <br />
+                    교사 <br /> 또는 <br />
                     학부모
                 </StyledRoleBox>
                 <StyledRoleBox onClick={onClickHanlder}>

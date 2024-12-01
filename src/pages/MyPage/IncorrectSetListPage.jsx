@@ -29,7 +29,7 @@ const ClassListTitle = styled.div`
     font-size: 24px;
     font-weight: 500;
     display: flex;
-    margin: 30px 0 0 30px;
+    margin: 30px 0 10px 30px;
     font-family: 'DXSamgakGimbap Medium';
 `;
 const ClassEnterPageLayout = styled.div`
@@ -45,6 +45,7 @@ const ClassEnterPageLayout = styled.div`
 const StyledBoxLayout = styled.div`
     padding: 10px;
     margin: 10px;
+    margin-left: 30px;
 `;
 
 const ClassListButtonBox = styled.div`
@@ -193,7 +194,7 @@ const IncorrectSetListPage = () => {
     if (step === 1 && action === 'createIncorrectNote') {
         return (
             <SetListPageLayout>
-                <Title>문제 유형 선택</Title>
+                <ClassListTitle>문제 유형 선택</ClassListTitle>
                 <TagButtonContainer>
                     {tags.map((tag) => (
                         <TagButton
@@ -214,7 +215,7 @@ const IncorrectSetListPage = () => {
     }
     return (
         <ClassEnterPageLayout>
-            <ClassListTitle>{title}</ClassListTitle>
+            <ClassListTitle>{title}노트</ClassListTitle>
             <ClassListButtonBox>
                 <CreateButton onClick={createOnClick}>오답시험 보기</CreateButton>
             </ClassListButtonBox>
