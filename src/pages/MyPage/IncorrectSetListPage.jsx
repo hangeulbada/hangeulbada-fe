@@ -143,7 +143,7 @@ const IncorrectSetListPage = () => {
 
     useEffect(() => {
         getIncorrectNoteApi();
-    }, []);
+    }, [step]);
 
     const getIncorrectNoteApi = async () => {
         const res = await getIncorrectNote();

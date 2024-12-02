@@ -273,40 +273,32 @@ const StuResultPage = () => {
     const [myId, setMyId] = useState();
     const [answerLength, setAnswerLength] = useState(0);
 
-    // useEffect(() => {
-    //   const getdefaultData = async () => {
-    //     await getClassSet(groupId).then((res) => {
-    //       setDefaultData(res.data);
-    //       // setMyId(res.data[0].studentId)
-    //       // console.log('res: ', defaultData[0].studentId);
-    //       // const sample =  defaultData[0].studentId;
-    //       // setMyId(sample);
-    //     });
-    //   };
-    //   getdefaultData();
-    // }, [myId]);
-
     useEffect(() => {
         const getSetData = async () => {
-            await getClassSet(groupId).then((res) => {
-                setDefaultData(res.data.filter((item) => item != null));
-                console.log('defalutData:', res.data);
-                console.log(res.data[0].studentId);
-                setMyId(res.data[0].studentId);
-                // // console.log('plz', plz);
-                // setMyId(plz);
-            });
-            await getSet(workbookId).then((res) => {
-                setSetData(res.data);
-                // console.log('Getset', setData);
-            });
-            if (myId) {
-                await getStudentAnswer(workbookId, myId).then((res) => {
-                    console.log('answer', res.data);
-                    setAnswerData(res.data);
-                    setAnswerLength(res.data.answers.length);
-                    console.log('ll', answerLength);
-                });
+            try {
+                // getClassSet 호출 및 데이터 처리
+                const classSetResponse = await getClassSet(groupId);
+                const filteredData = classSetResponse.data.filter((item) => item != null);
+                setDefaultData(filteredData);
+                // console.log('defaultData:', filteredData);
+
+                // defaultData가 존재하면 myId 설정
+                if (filteredData.length > 0) {
+                    setMyId(filteredData[0].studentId);
+                }
+
+                // getSet 호출 및 데이터 처리
+                const setResponse = await getSet(workbookId);
+                setSetData(setResponse.data);
+
+                // myId가 설정된 경우 getStudentAnswer 호출
+                if (filteredData.length > 0) {
+                    const studentAnswerResponse = await getStudentAnswer(workbookId, filteredData[0].studentId);
+                    setAnswerData(studentAnswerResponse.data);
+                    setAnswerLength(studentAnswerResponse.data.answers.length);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
             }
         };
         getSetData();
