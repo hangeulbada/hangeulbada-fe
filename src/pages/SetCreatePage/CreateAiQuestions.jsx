@@ -147,7 +147,7 @@ const CreateAiQuestions = ({ count, diff, workbookId }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     if (isLoading) {
-        return <Loading />;
+        return <Loading message={'AI 문제를 생성 중입니다...'} />;
     }
 
     const onClickTag = (tag) => {

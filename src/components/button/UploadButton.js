@@ -7,6 +7,7 @@ import { CameraIcon } from '../../assets/icons';
 import BlurModal from '../modal/BlurModal';
 import { requestOCR } from '../../utils/api/student';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../loading/Loading';
 
 const BlurContainer = styled.div`
     display: flex;
@@ -54,6 +55,7 @@ const UploadButton = ({ studentId, workbookId, groupId }) => {
     const [fileImage, setFileImage] = useState(null);
     const [imageCaptured, setImageCaptured] = useState(false);
     const [OCRres, setOCRres] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const requestOCRdata = async (workbookId, imageName) => {
@@ -91,17 +93,31 @@ const UploadButton = ({ studentId, workbookId, groupId }) => {
 
         // Uploading file to s3
 
-        var upload = s3
-            .putObject(params)
-            .on('httpUploadProgress', (evt) => {})
-            .promise();
+        try {
+            setIsLoading(true); // 로딩 상태 시작
+            await s3.putObject(params).promise();
+            await requestOCRdata(workbookId, imageName);
+        } catch (error) {
+            console.error('File upload failed:', error);
+        } finally {
+            setIsLoading(false); // 로딩 상태 종료
+        }
 
-        await upload.then((err, data) => {
-            // console.log(err);
-            requestOCRdata(workbookId, imageName);
-        });
         setImageCaptured(false);
     };
+
+    //     var upload = s3
+    //         .putObject(params)
+    //         .on('httpUploadProgress', (evt) => {})
+    //         .promise();
+
+    //     await upload.then((err, data) => {
+    //         // console.log(err);
+
+    //         requestOCRdata(workbookId, imageName);
+    //     });
+    //     setImageCaptured(false);
+    // };
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -118,46 +134,58 @@ const UploadButton = ({ studentId, workbookId, groupId }) => {
         if (OCRres.length > 0) {
             console.log('Navigating with OCR results:', OCRres);
             navigate('/stuResult', { state: { workbookId, OCRres, groupId } });
+            setIsLoading(false);
         }
     }, [OCRres, navigate, workbookId]);
 
     return (
         <div>
-            {imageCaptured && (
-                <BlurContainer>
-                    <BlurModal
-                        innerDatas={
-                            <>
-                                <img className="blur-image" src={fileImage} alt="userImage" />
-                                <ButtonContainer>
-                                    <ContainedButton btnType="primary" size="mid" text="제출" onClick={uploadFile} />
-                                    <ContainedButton
-                                        btnType="primary"
-                                        size="mid"
-                                        text="다시 찍기"
-                                        onClick={cancleOnClick}
-                                    />
-                                </ButtonContainer>
-                            </>
-                        }
-                    />
-                </BlurContainer>
+            {isLoading ? (
+                <Loading message={'받아쓰기 답안을 채점 중입니다...'} />
+            ) : (
+                <>
+                    {imageCaptured && (
+                        <BlurContainer>
+                            <BlurModal
+                                innerDatas={
+                                    <>
+                                        <img className="blur-image" src={fileImage} alt="userImage" />
+                                        <ButtonContainer>
+                                            <ContainedButton
+                                                btnType="primary"
+                                                size="mid"
+                                                text="제출"
+                                                onClick={uploadFile}
+                                            />
+                                            <ContainedButton
+                                                btnType="primary"
+                                                size="mid"
+                                                text="다시 찍기"
+                                                onClick={cancleOnClick}
+                                            />
+                                        </ButtonContainer>
+                                    </>
+                                }
+                            />
+                        </BlurContainer>
+                    )}
+                    <label htmlFor="file">
+                        <StyledInputContainer>
+                            <AttachButton>
+                                <img className="camera" src={CameraIcon} alt="camera" />
+                                사진 찍어 제출하기
+                            </AttachButton>
+                            <Input
+                                type="file"
+                                id="file"
+                                capture="environment"
+                                accept="image/jpg, image/png, image/jpeg"
+                                onChange={handleFileChange}
+                            />
+                        </StyledInputContainer>
+                    </label>
+                </>
             )}
-            <label htmlFor="file">
-                <StyledInputContainer>
-                    <AttachButton>
-                        <img className="camera" src={CameraIcon} alt="camera" />
-                        사진 찍어 제출하기
-                    </AttachButton>
-                    <Input
-                        type="file"
-                        id="file"
-                        capture="environment"
-                        accept="image/jpg, image/png, image/jpeg"
-                        onChange={handleFileChange}
-                    />
-                </StyledInputContainer>
-            </label>
         </div>
     );
 };
