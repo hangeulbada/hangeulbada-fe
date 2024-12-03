@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ProblemCard from './ProblemCard';
+import ProblemCard from '../SetResultPage/ProblemCard';
 import { StarIcon } from '../../assets/icons';
 import ContainedButton from '../../components/button/ContainedButton';
 import BlurModal from '../../components/modal/BlurModal';
-import { useParams } from 'react-router-dom';
-import { getSet } from '../../utils/api/set';
-import { getStudentAnswer } from '../../utils/api/student';
+
 import Stars from '../../components/banner/Stars';
+import { useLocation } from 'react-router-dom';
+import { getMyResult } from '../../utils/api/incorrect';
+import { useParams } from 'react-router-dom';
 
 const SetResultPageLayout = styled.div`
     display: flex;
@@ -32,6 +33,12 @@ const SetInformation = styled.div`
         font-size: 24px;
         margin-bottom: 8px;
     }
+    .title2 {
+        font-family: 'DXSamgakGimbap Medium';
+        font-size: 24px;
+        margin-bottom: 8px;
+        margin-left: 5px;
+    }
     .description {
         font-family: 'DXSamgakGimbap Light';
         font-size: 16px;
@@ -39,7 +46,7 @@ const SetInformation = styled.div`
     }
     .count {
         font-family: 'DXSamgakGimbap Light';
-        font-size: 16px;
+        font-size: 25px;
         margin-bottom: 8px;
     }
     .difficulty {
@@ -49,7 +56,7 @@ const SetInformation = styled.div`
             margin-right: 12px;
         }
         font-family: 'DXSamgakGimbap Light';
-        font-size: 16px;
+        font-size: 20px;
         margin-bottom: 8px;
     }
 `;
@@ -71,6 +78,7 @@ const NameAndButtonBox = styled.div`
 const ScoreBox = styled.div`
     display: flex;
     align-items: center;
+
     .text {
         font-family: 'DXSamgakGimbap Medium';
         font-size: 20px;
@@ -88,8 +96,10 @@ const ScoreBox = styled.div`
     }
 `;
 
-const SetResultPage = () => {
-    const { wid, sid } = useParams();
+const MyResultPage = () => {
+    const location = useLocation();
+    const { wid, assignid, workbookTitle } = location.state || {};
+    console.log('AssignId', assignid);
 
     const setInitialState = {
         title: '',
@@ -106,19 +116,21 @@ const SetResultPage = () => {
     const [openImage, setOpenImage] = useState(false);
     const [setData, setSetData] = useState(setInitialState);
     const [answerData, setAnswerData] = useState(answerInitialState);
+    const [defaultData, setDefaultData] = useState();
+    const [myId, setMyId] = useState();
+    const [answerLength, setAnswerLength] = useState(0);
 
     useEffect(() => {
-        const getSetData = async () => {
-            await getSet(wid).then((res) => {
-                setSetData(res.data);
-            });
-            await getStudentAnswer(wid, sid).then((res) => {
-                setAnswerData(res.data);
-                console.log(answerData);
-            });
-        };
-        getSetData();
+        getMyResultApi();
+        console.log(workbookTitle);
     }, []);
+
+    const getMyResultApi = async () => {
+        const res = await getMyResult(assignid);
+        // console.log('myresult', res);
+        setAnswerData(res.data);
+        setAnswerLength(res.data.answers.length);
+    };
 
     return (
         <>
@@ -137,12 +149,12 @@ const SetResultPage = () => {
             )}
             <SetResultPageLayout>
                 <SetInformation>
-                    <div className="title">{setData.title}</div>
-                    <div className="description">{setData.description}</div>
-                    <div className="count">문제 수 {setData.questionNum}</div>
+                    <div className="title">
+                        세트명:<span className="title2">{workbookTitle}</span>
+                    </div>
                     <div className="difficulty">
-                        <div className="text">난이도</div>
-                        <Stars difficulty={setData.difficulty} />
+                        <div className="text">문제 수:</div>
+                        {answerLength}
                     </div>
                 </SetInformation>
                 <SetHeader>
@@ -158,15 +170,16 @@ const SetResultPage = () => {
                     <ScoreBox>
                         <div className="text">맞은 개수</div>
                         <div className="score">
-                            {answerData.score}/{answerData.answers.length}
+                            {answerData.score}/{answerLength}
                         </div>
                     </ScoreBox>
                 </SetHeader>
-                {answerData.answers.map((answer, idx) => (
+                {answerData?.answers.map((answer, idx) => (
                     <ProblemCard
                         key={idx}
                         studentAnswer={answer.ocr_answer}
                         question={answer.questionFull}
+                        analysis={answer.anlysis}
                         simillarity={answer.simillarity}
                     />
                 ))}
@@ -175,4 +188,4 @@ const SetResultPage = () => {
     );
 };
 
-export default SetResultPage;
+export default MyResultPage;

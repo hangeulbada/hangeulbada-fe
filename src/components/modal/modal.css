@@ -1,0 +1,41 @@
+.button_wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    z-index: 1000;
+}
+
+.ok_button {
+    width: 101px;
+    height: 35px;
+    margin-top: 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: #127fff;
+    color: white;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'DXSamgakGimbap Medium';
+    cursor: pointer;
+}
+
+.cancel_button {
+    width: 101px;
+    height: 35px;
+    margin-top: 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: #9c9c9c;
+    color: white;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.content_text {
+    font-family: 'DXSamgakGimbap Light';
+    font-size: 17px;
+}
